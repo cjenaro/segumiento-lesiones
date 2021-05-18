@@ -1,15 +1,18 @@
 import type { LinksFunction, LoaderFunction } from "remix";
-import { Meta, Links, Scripts, useRouteData, LiveReload } from "remix";
-import { Outlet } from "react-router-dom";
+import { Meta, json, Links, Scripts, useRouteData, LiveReload } from "remix";
+import { NavLink, Outlet } from "react-router-dom";
 
 import stylesUrl from "./styles/global.css";
+import { getUserSession } from "./sessions";
+import React from "react";
 
 export let links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
-export let loader: LoaderFunction = async () => {
-  return { date: new Date() };
+export let loader: LoaderFunction = async ({ request }) => {
+  const session = await getUserSession(request);
+  return json(session);
 };
 
 function Document({ children }: { children: React.ReactNode }) {
@@ -35,9 +38,25 @@ export default function App() {
   let data = useRouteData();
   return (
     <Document>
+      <header>
+        <nav>
+          {data?.email ? (
+            <>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/profile">Perfil</NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/">Home</NavLink>
+              <NavLink to="/">Iniciar Sesión</NavLink>
+              <NavLink to="/">Registrarse</NavLink>
+            </>
+          )}
+        </nav>
+      </header>
       <Outlet />
       <footer>
-        <p>This page was rendered at {data.date.toLocaleString()}</p>
+        <p>Seguimiento Deportivo</p>
       </footer>
     </Document>
   );
