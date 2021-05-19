@@ -2,12 +2,14 @@ import type { LoaderFunction, Session, Request } from "remix";
 import { createCookieSessionStorage, redirect } from "remix";
 import { verify } from "./utils.server";
 
+let exp = new Date(Date.now());
+exp.setDate(exp.getDate() + 1);
+
 let { getSession, commitSession, destroySession } = createCookieSessionStorage({
   cookie: {
     name: "__session",
-    expires: new Date(Date.now() + 60),
+    expires: exp,
     httpOnly: true,
-    maxAge: 60,
     path: "/",
     sameSite: "lax",
     secrets: [process.env.COOKIE_SECRETS || "secrets"],
@@ -15,10 +17,11 @@ let { getSession, commitSession, destroySession } = createCookieSessionStorage({
   },
 });
 
-export interface UserSession extends Session {
+export interface UserSession {
   email?: string;
   name?: string;
 }
+
 export type Next = (session: UserSession | null) => ReturnType<LoaderFunction>;
 
 export async function requireUser(request: Request, next: Next) {

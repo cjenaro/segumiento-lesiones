@@ -5,7 +5,7 @@ import type {
   ActionFunction,
 } from "remix";
 import { NavLink } from "react-router-dom";
-import { useRouteData, json, redirect } from "remix";
+import { useRouteData, json, redirect, Form } from "remix";
 import { prisma } from "../db";
 import { commitSession, getSession } from "../sessions";
 import stylesUrl from "../styles/index.css";
@@ -99,7 +99,7 @@ export default function Index() {
             Registrarse
           </NavLink>
         </nav>
-        <form method="post">
+        <Form method="post">
           <label htmlFor="email">
             Email:
             <input
@@ -116,9 +116,13 @@ export default function Index() {
           </label>
           <button type="submit">Iniciar Sesión</button>
           {data?.errors?.length
-            ? data?.errors.map((error) => <p key={error}>{error}</p>)
+            ? data?.errors.map((error) => (
+                <p key={error} className="error">
+                  {error}
+                </p>
+              ))
             : null}
-        </form>
+        </Form>
       </div>
     </main>
   );

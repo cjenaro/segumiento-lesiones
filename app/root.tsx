@@ -1,9 +1,18 @@
-import type { LinksFunction, LoaderFunction } from "remix";
-import { Meta, json, Links, Scripts, useRouteData, LiveReload } from "remix";
+import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
+import {
+  Meta,
+  json,
+  Links,
+  Form,
+  Scripts,
+  useRouteData,
+  LiveReload,
+  redirect,
+} from "remix";
 import { NavLink, Outlet } from "react-router-dom";
 
 import stylesUrl from "./styles/global.css";
-import { getUserSession } from "./sessions";
+import { destroySession, getUserSession } from "./sessions";
 import React from "react";
 
 export let links: LinksFunction = () => {
@@ -13,6 +22,20 @@ export let links: LinksFunction = () => {
 export let loader: LoaderFunction = async ({ request }) => {
   const session = await getUserSession(request);
   return json(session);
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  const session = await getUserSession(request);
+  if (session) {
+    const cookieHeader = await destroySession(session);
+    return redirect("/login", {
+      headers: {
+        "Set-Cookie": cookieHeader,
+      },
+    });
+  }
+
+  return redirect("/");
 };
 
 function Document({ children }: { children: React.ReactNode }) {
@@ -44,6 +67,9 @@ export default function App() {
             <>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/profile">Perfil</NavLink>
+              <Form method="post">
+                <button type="submit">Cerrar Sesión</button>
+              </Form>
             </>
           ) : (
             <>

@@ -4,7 +4,7 @@ import type {
   LoaderFunction,
   ActionFunction,
 } from "remix";
-import { json, useRouteData, redirect } from "remix";
+import { json, useRouteData, redirect, Form } from "remix";
 import { prisma } from "../db";
 import {
   commitSession,
@@ -27,8 +27,13 @@ export let links: LinksFunction = () => {
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
-  return await requireUser(request, (session) => {
-    return json(session);
+  const session = await getSession(request.headers.get("Cookie"));
+  return await requireUser(request, (userSession) => {
+    const indexSession: IndexSession & UserSession = {
+      error: session.get("error"),
+      ...userSession,
+    };
+    return json(indexSession);
   });
 };
 
@@ -39,7 +44,7 @@ export let action: ActionFunction = async ({ request }) => {
   if (!body.name || !body.email) {
     session.flash("error", "No name entered or no email found");
   } else {
-    prisma.user.update({
+    await prisma.user.update({
       where: {
         email: body.email,
       },
@@ -56,32 +61,30 @@ export let action: ActionFunction = async ({ request }) => {
   });
 };
 
+interface IndexSession {
+  error?: string;
+}
+
 export default function Index() {
-  let data = useRouteData<UserSession>();
+  let data = useRouteData<IndexSession & UserSession>();
   return (
     <main>
       <h1>Seguimiento Deportivo</h1>
       <div>
-        <p>
-          {!data?.name ? (
-            <form method="post">
-              <label htmlFor="name">
-                Ingresá tu nombre:
-                <br />
-                <input type="text" name="name" id="name" />
-                <input
-                  type="hidden"
-                  name="email"
-                  id="email"
-                  value={data.email}
-                />
-              </label>
-              <button type="submit">Enviar</button>
-            </form>
-          ) : (
-            `Bienvenido, ${data.name}`
-          )}
-        </p>
+        {!data?.name ? (
+          <Form method="post">
+            <label htmlFor="name">
+              Ingresá tu nombre:
+              <br />
+              <input type="text" name="name" id="name" />
+              <input type="hidden" name="email" id="email" value={data.email} />
+            </label>
+            <button type="submit">Enviar</button>
+            {data?.error ? <p className="error">{data.error}</p> : null}
+          </Form>
+        ) : (
+          <p>Bienvenido, {data.name}</p>
+        )}
       </div>
     </main>
   );

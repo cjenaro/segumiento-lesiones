@@ -6,7 +6,7 @@ import type {
   ActionFunction,
   Request,
 } from "remix";
-import { useRouteData, redirect, json } from "remix";
+import { useRouteData, redirect, json, Form } from "remix";
 import { prisma } from "../db";
 import { commitSession, getSession } from "../sessions";
 import stylesUrl from "../styles/index.css";
@@ -19,8 +19,7 @@ interface RegisterSession {
 
 export let meta: MetaFunction = () => {
   return {
-    title: "Seguimiento Deportivo",
-    description: "Control de lesionados y vuelta a actividades.",
+    title: "Registrarse | Seguimiento Deportivo",
   };
 };
 
@@ -102,7 +101,7 @@ export default function Index() {
             Registrarse
           </NavLink>
         </nav>
-        <form method="post">
+        <Form method="post">
           <label htmlFor="email">
             Email:
             <input
@@ -127,9 +126,13 @@ export default function Index() {
           </label>
           <button type="submit">Registrarse</button>
           {data?.errors?.length
-            ? data?.errors.map((error) => <p key={error}>{error}</p>)
+            ? data?.errors.map((error) => (
+                <p key={error} className="error">
+                  {error}
+                </p>
+              ))
             : null}
-        </form>
+        </Form>
       </div>
     </main>
   );

@@ -65,6 +65,8 @@ body {
   font-size: 18px;
   margin: 0;
   min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 button {
@@ -111,18 +113,28 @@ header > nav {
   grid-auto-columns: max-content;
 }
 
+header nav > form {
+  margin-top: 0;
+}
+
+header nav > form button[type="submit"],
 header nav > a {
   margin: 0;
   text-align: center;
   text-decoration: none;
   padding: 10px;
   border-radius: 4px;
+  color: currentColor;
+  cursor: pointer;
 }
 
+header nav > form button[type="submit"]:hover,
 header nav > a:hover {
   text-decoration: underline;
+  background-color: transparent;
 }
 
+header nav > form button[type="submit"]:focus,
 header nav > a:focus {
   background-color: var(--base0D);
 }
@@ -134,8 +146,9 @@ input:focus {
 
 footer {
   text-align: center;
-  color: #ccc;
-  padding-top: 80px;
+  color: var(--base07);
+  padding: 20px;
+  background-color: var(--base0C);
 }
 
 main {
@@ -177,6 +190,19 @@ main {
   margin: 0;
 }
 
+.form-tabs > nav + form button[type="submit"] {
+  --button-background: var(--base04);
+  color: var(--base07);
+}
+
+.form-tabs > nav + form button[type="submit"]:hover {
+  --button-background: var(--base03);
+}
+
+.form-tabs > nav + form button[type="submit"]:focus {
+  --button-background: var(--base02);
+}
+
 .form-tabs label {
   display: flex;
   width: 100%;
@@ -185,4 +211,23 @@ main {
 
 .form-tabs input {
   margin-top: 5px;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.3);
+    opacity: 0.3;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.error {
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--base0F);
+  margin-top: 1em;
+  animation: pop 0.3s ease;
 }
