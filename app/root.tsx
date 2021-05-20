@@ -1,4 +1,4 @@
-import type { ActionFunction, LinksFunction, LoaderFunction } from "remix";
+import type { LinksFunction, LoaderFunction } from "remix";
 import {
   Meta,
   json,
@@ -7,12 +7,11 @@ import {
   Scripts,
   useRouteData,
   LiveReload,
-  redirect,
 } from "remix";
 import { NavLink, Outlet } from "react-router-dom";
 
 import stylesUrl from "./styles/global.css";
-import { destroySession, getUserSession } from "./sessions";
+import { getUserSession } from "./sessions";
 import React from "react";
 
 export let links: LinksFunction = () => {
@@ -24,25 +23,13 @@ export let loader: LoaderFunction = async ({ request }) => {
   return json(session);
 };
 
-export let action: ActionFunction = async ({ request }) => {
-  const session = await getUserSession(request);
-  if (session) {
-    const cookieHeader = await destroySession(session);
-    return redirect("/login", {
-      headers: {
-        "Set-Cookie": cookieHeader,
-      },
-    });
-  }
-
-  return redirect("/");
-};
-
 function Document({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="icon" href="/favicon.png" type="image/png" />
         <Meta />
         <Links />
@@ -50,7 +37,7 @@ function Document({ children }: { children: React.ReactNode }) {
       <body>
         {children}
 
-        <Scripts />
+        {/* <Scripts /> */}
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
@@ -67,7 +54,7 @@ export default function App() {
             <>
               <NavLink to="/">Home</NavLink>
               <NavLink to="/profile">Perfil</NavLink>
-              <Form method="post">
+              <Form method="post" action="/logout">
                 <button type="submit">Cerrar Sesión</button>
               </Form>
             </>

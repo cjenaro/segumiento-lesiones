@@ -20,6 +20,7 @@ let { getSession, commitSession, destroySession } = createCookieSessionStorage({
 export interface UserSession {
   email?: string;
   name?: string;
+  id?: number;
 }
 
 export type Next = (session: UserSession | null) => ReturnType<LoaderFunction>;

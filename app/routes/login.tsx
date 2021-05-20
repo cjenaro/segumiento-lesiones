@@ -58,7 +58,7 @@ export let action: ActionFunction = async ({ request }) => {
     });
 
     if (await comparePassword(password, user?.password!)) {
-      session.set("token", sign({ email, name: user?.name }));
+      session.set("token", sign({ email, name: user?.name, id: user?.id }));
       return redirect("/", {
         headers: {
           "Set-Cookie": await commitSession(session),

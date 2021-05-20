@@ -8,8 +8,36 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  name     String? @db.VarChar(255)
-  email    String  @unique @db.VarChar(255)
-  password String? @db.VarChar(255)
+  id           Int            @id @default(autoincrement())
+  name         String?        @db.VarChar(255)
+  email        String         @unique @db.VarChar(255)
+  password     String?        @db.VarChar(255)
+  SportsPlayer SportsPlayer[]
+  Test         Test[]
+}
+
+model SportsPlayer {
+  id      Int       @id @default(autoincrement())
+  name    String?   @db.VarChar(255)
+  email   String    @unique @db.VarChar(255)
+  Attempt Attempt[]
+  userId  Int
+  User    User      @relation(fields: [userId], references: [id])
+}
+
+model Test {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  units   String    @db.VarChar(50)
+  Attempt Attempt[]
+  userId  Int
+  User    User      @relation(fields: [userId], references: [id])
+}
+
+model Attempt {
+  id             Int          @id @default(autoincrement())
+  testId         Int
+  Test           Test         @relation(fields: [testId], references: [id])
+  SportsPlayer   SportsPlayer @relation(fields: [sportsPlayerId], references: [id])
+  sportsPlayerId Int
 }

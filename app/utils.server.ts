@@ -1,3 +1,4 @@
+import type { Request } from "remix";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "jsonwebtoken";
 export { bcrypt, jsonwebtoken };
@@ -16,4 +17,12 @@ export function sign(payload: any) {
 
 export function verify(token: string) {
   return jsonwebtoken.verify(token, process.env.JWT_SECRET!);
+}
+
+export async function getRequestBody<BodyType extends Record<string, string>>(
+  request: Request
+) {
+  return Object.fromEntries(
+    new URLSearchParams(await request.text())
+  ) as BodyType;
 }

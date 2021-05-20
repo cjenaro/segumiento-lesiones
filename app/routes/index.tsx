@@ -1,3 +1,5 @@
+import React from "react";
+import { NavLink } from "react-router-dom";
 import type {
   MetaFunction,
   LinksFunction,
@@ -69,22 +71,49 @@ export default function Index() {
   let data = useRouteData<IndexSession & UserSession>();
   return (
     <main>
-      <h1>Seguimiento Deportivo</h1>
-      <div>
-        {!data?.name ? (
-          <Form method="post">
-            <label htmlFor="name">
-              Ingresá tu nombre:
-              <br />
-              <input type="text" name="name" id="name" />
-              <input type="hidden" name="email" id="email" value={data.email} />
-            </label>
-            <button type="submit">Enviar</button>
-            {data?.error ? <p className="error">{data.error}</p> : null}
-          </Form>
-        ) : (
-          <p>Bienvenido, {data.name}</p>
-        )}
+      <div className="container">
+        <h1>Seguimiento Deportivo</h1>
+        <div>
+          {!data?.name ? (
+            <Form method="post">
+              <label htmlFor="name">
+                Ingresá tu nombre:
+                <br />
+                <input type="text" name="name" id="name" />
+                <input
+                  type="hidden"
+                  name="email"
+                  id="email"
+                  value={data.email}
+                />
+              </label>
+              <button type="submit">Enviar</button>
+              {data?.error ? <p className="error">{data.error}</p> : null}
+            </Form>
+          ) : (
+            <p>Bienvenido, {data.name}</p>
+          )}
+        </div>
+        <nav className="index-nav">
+          <p>Tests</p>
+          <ul>
+            <li>
+              <NavLink to="/tests/new">Agregar Test</NavLink>
+            </li>
+            <li>
+              <NavLink to="/tests">Ver Tests</NavLink>
+            </li>
+          </ul>
+          <p>Deportista</p>
+          <ul>
+            <li>
+              <NavLink to="/players/new">Agregar Deportista</NavLink>
+            </li>
+            <li>
+              <NavLink to="/players">Ver Deportistas</NavLink>
+            </li>
+          </ul>
+        </nav>
       </div>
     </main>
   );

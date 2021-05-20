@@ -1,8 +1,51 @@
-/* 
- * when the user visits this page, this style will apply, when they leave, it
- * will get unloaded, so don't worry so much about conflicting styles between
- * pages!
- */
 h1 {
   text-align: center;
+}
+
+.index-nav {
+  display: grid;
+  border-radius: 4px;
+  background-color: var(--base0C);
+  padding: 1rem;
+  width: 100%;
+  margin-left: 0;
+}
+
+.index-nav ul {
+  margin: 0;
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: var(--base0D);
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.index-nav a {
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 8px;
+  display: block;
+  white-space: nowrap;
+  will-change: background-color;
+  transition: background-color 0.2s ease;
+}
+
+.index-nav a:hover {
+  background-color: var(--base09);
+}
+
+.index-nav ul li {
+  margin: 10px 0 0 0;
+}
+
+.index-nav ul li:first-of-type {
+  margin-top: 0;
+}
+
+@media (min-width: 700px) {
+  .index-nav {
+    width: max-content;
+  }
 }

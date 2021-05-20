@@ -4,13 +4,12 @@ import type {
   LinksFunction,
   LoaderFunction,
   ActionFunction,
-  Request,
 } from "remix";
 import { useRouteData, redirect, json, Form } from "remix";
 import { prisma } from "../db";
 import { commitSession, getSession } from "../sessions";
 import stylesUrl from "../styles/index.css";
-import { hashPassword, sign } from "../utils.server";
+import { getRequestBody, hashPassword, sign } from "../utils.server";
 
 interface RegisterSession {
   errors?: string[];
@@ -35,14 +34,6 @@ export let loader: LoaderFunction = async ({ request }) => {
   };
   return json(registerSession);
 };
-
-async function getRequestBody<BodyType extends Record<string, string>>(
-  request: Request
-) {
-  return Object.fromEntries(
-    new URLSearchParams(await request.text())
-  ) as BodyType;
-}
 
 export let action: ActionFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
